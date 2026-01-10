@@ -3,13 +3,6 @@ import { useInView } from "framer-motion";
 import { useRef } from "react";
 
 const sponsorTiers = [
-  {
-    tier: "",
-    sponsors: [
-      { name: "TechCorp", logo: "TC" },
-      { name: "InnovateLabs", logo: "IL" },
-    ],
-  },
 ];
 
 export const Sponsors = () => {
