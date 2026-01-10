@@ -1,0 +1,65 @@
+const express = require("express");
+const Razorpay = require("razorpay");
+const crypto = require("crypto");
+const TeamRegistration = require("../models/TeamRegistration");
+
+const router = express.Router();
+
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
+
+// 1️⃣ Create Order
+router.post("/create-order", async (req, res) => {
+  try {
+    const options = {
+      amount: 1 * 100, // ₹1
+      currency: "INR",
+      receipt: `receipt_${Date.now()}`,
+    };
+
+    const order = await razorpay.orders.create(options);
+    res.status(200).json(order);
+  } catch (error) {
+    res.status(500).json({ message: "Order creation failed" });
+  }
+});
+
+// 2️⃣ Verify Payment & Save Registration
+router.post("/verify-payment", async (req, res) => {
+  try {
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      formData,
+    } = req.body;
+
+    const sign = razorpay_order_id + "|" + razorpay_payment_id;
+
+    const expectedSign = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(sign)
+      .digest("hex");
+
+    if (expectedSign !== razorpay_signature) {
+      return res.status(400).json({ message: "Invalid payment signature" });
+    }
+
+    // Save to MongoDB
+    const registration = new TeamRegistration({
+      ...formData,
+      paymentStatus: "PAID",
+      paymentId: razorpay_payment_id,
+    });
+
+    await registration.save();
+
+    res.status(201).json({ success: true });
+  } catch (error) {
+    res.status(500).json({ message: "Payment verification failed" });
+  }
+});
+
+module.exports = router;

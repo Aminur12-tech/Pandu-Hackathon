@@ -47,6 +47,15 @@ const TeamRegistrationSchema = new mongoose.Schema(
       type: Number,
       default: 300,
     },
+    paymentStatus: {
+      type: String,
+      enum: ["PAID", "PENDING"],
+      default: "PENDING",
+    },
+    paymentId: {
+      type: String,
+    },
+
   },
   { timestamps: true }
 );

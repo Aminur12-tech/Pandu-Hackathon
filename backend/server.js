@@ -14,6 +14,8 @@ app.use(express.json());
 
 // Routes
 app.use("/api/registration", require("./routes/registrationRoutes"));
+app.use("/api/payment", require("./routes/paymentroutes"));
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
