@@ -71,129 +71,135 @@ export const RegistrationModal = ({ isOpen, onClose }: RegistrationModalProps) =
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // -------- VALIDATION (UNCHANGED) --------
-    if (!teamName.trim()) {
-      toast({ title: "Error", description: "Please enter a team name", variant: "destructive" });
-      return;
-    }
-
-    if (!collegeName.trim()) {
-      toast({ title: "Error", description: "Please enter your college name", variant: "destructive" });
-      return;
-    }
-
-    if (!studentClass.trim()) {
-      toast({ title: "Error", description: "Please enter your class/semester", variant: "destructive" });
-      return;
-    }
-
-    if (!address.trim()) {
-      toast({ title: "Error", description: "Please enter your address", variant: "destructive" });
-      return;
-    }
-
-    if (!selectedProblem) {
-      toast({ title: "Error", description: "Please select a problem statement", variant: "destructive" });
-      return;
-    }
-
-    const invalidMembers = members.filter(
-      (m) => !m.name.trim() || !m.email.trim() || !m.email.includes("@")
-    );
-
-    if (invalidMembers.length > 0) {
+    // =========================
+    // VALIDATION
+    // =========================
+    if (!teamName || !collegeName || !studentClass || !address || !selectedProblem) {
       toast({
         title: "Error",
-        description: "Please fill in all member details with valid emails",
+        description: "All fields are required",
         variant: "destructive",
       });
       return;
     }
 
-    // -------- API CALL TO BACKEND --------
+    if (members.some(m => !m.name || !m.email || !m.email.includes("@"))) {
+      toast({
+        title: "Error",
+        description: "Invalid member details",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
+    // 🔥 Freeze data BEFORE payment
+    const formData = {
+      teamName,
+      collegeName,
+      studentClass,
+      address,
+      selectedProblem,
+      members,
+    };
+
     try {
-      // 1️⃣ CREATE ORDER
-      const orderRes = await fetch(`${API_URL}/api/payment/create-order`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
+      // =========================
+      // CREATE ORDER
+      // =========================
+      const orderRes = await fetch(
+        `${API_URL}/api/payment/create-order`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
 
       const order = await orderRes.json();
+
       if (!order.id) throw new Error("Order creation failed");
 
-      // 2️⃣ OPEN RAZORPAY CHECKOUT
+      // =========================
+      // RAZORPAY OPTIONS
+      // =========================
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID, // PUBLIC KEY
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: order.amount,
-        currency: "INR",
+        currency: order.currency,
+        order_id: order.id,
         name: "Pandu College Hackathon",
         description: "Team Registration Fee",
-        order_id: order.id,
 
         handler: async function (response: any) {
-          // 3️⃣ VERIFY PAYMENT
-          const verifyRes = await fetch(`${API_URL}/api/payment/verify-payment`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-              formData: {
-                teamName,
-                collegeName,
-                studentClass,
-                address,
-                selectedProblem,
-                members,
-              },
-            }),
-          });
+          try {
+            const verifyRes = await fetch(
+              `${API_URL}/api/payment/verify-payment`,
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                  formData,
+                }),
+              }
+            );
 
-          const verifyData = await verifyRes.json();
+            const verifyData = await verifyRes.json();
 
-          if (!verifyRes.ok) {
-            throw new Error(verifyData.message || "Payment verification failed");
+            if (!verifyRes.ok) {
+              throw new Error(verifyData.message);
+            }
+
+            toast({
+              title: "Registration Successful 🎉",
+              description: "Payment verified & team registered",
+            });
+
+            onClose();
+            setTeamName("");
+            setCollegeName("");
+            setStudentClass("");
+            setAddress("");
+            setSelectedProblem("");
+            setMembers([{ id: "1", name: "", email: "" }]);
+
+          } catch (err: any) {
+            toast({
+              title: "Error",
+              description: err.message || "Verification failed",
+              variant: "destructive",
+            });
+          } finally {
+            setIsSubmitting(false);
           }
-
-          toast({
-            title: "Registration Successful 🎉",
-            description: "Payment completed & team registered",
-          });
-
-          // RESET FORM
-          onClose();
-          setTeamName("");
-          setCollegeName("");
-          setStudentClass("");
-          setAddress("");
-          setSelectedProblem("");
-          setMembers([{ id: "1", name: "", email: "" }]);
         },
-
-        prefill: {
-          name: members[0].name,
-          email: members[0].email,
-        },
-
-        theme: { color: "#7c3aed" },
       };
 
       const razorpay = new (window as any).Razorpay(options);
       razorpay.open();
 
-    } catch (error: any) {
+      razorpay.on("payment.failed", function () {
+        toast({
+          title: "Payment Failed",
+          description: "Transaction unsuccessful",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+      });
+
+    } catch (err: any) {
       toast({
         title: "Error",
-        description: error.message || "Payment failed",
+        description: err.message || "Something went wrong",
         variant: "destructive",
       });
-    } finally {
       setIsSubmitting(false);
     }
   };
+
 
 
   return (
