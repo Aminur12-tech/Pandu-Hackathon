@@ -113,7 +113,7 @@ export const RegistrationModal = ({ isOpen, onClose }: RegistrationModalProps) =
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/registration/register",
+        "https://pandu-hackathon.onrender.com/api/registration",
         {
           method: "POST",
           headers: {
