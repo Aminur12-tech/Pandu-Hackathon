@@ -113,7 +113,7 @@ export const RegistrationModal = ({ isOpen, onClose }: RegistrationModalProps) =
 
     try {
       const response = await fetch(
-        "https://pandu-hackathon.onrender.com/api/registration/register",
+        `${import.meta.env.VITE_API_URL}/api/registration/register`,
         {
           method: "POST",
           headers: {
