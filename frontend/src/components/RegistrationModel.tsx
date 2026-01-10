@@ -13,6 +13,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const problemStatements = [
   { id: "1", title: "Daily Sustainability Tracker", domain: "Environmental Tech 🌱" },
   { id: "2", title: "Smart Civic Problem Reporter", domain: "GovTech / Smart Cities 🏙️" },
@@ -113,7 +115,7 @@ export const RegistrationModal = ({ isOpen, onClose }: RegistrationModalProps) =
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/registration/register`,
+        `${API_URL}/api/registration/register`,
         {
           method: "POST",
           headers: {
