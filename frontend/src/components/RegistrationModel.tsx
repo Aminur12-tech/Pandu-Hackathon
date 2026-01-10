@@ -100,9 +100,10 @@ export const RegistrationModal = ({ isOpen, onClose }: RegistrationModalProps) =
       collegeName,
       studentClass,
       address,
-      selectedProblem,
+      problemStatementId: selectedProblem, // ✅ MATCH BACKEND
       members,
     };
+
 
     try {
       // =========================

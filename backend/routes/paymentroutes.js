@@ -36,6 +36,14 @@ router.post("/verify-payment", async (req, res) => {
       formData,
     } = req.body;
 
+    if (
+      !razorpay_order_id ||
+      !razorpay_payment_id ||
+      !razorpay_signature
+    ) {
+      return res.status(400).json({ message: "Missing payment details" });
+    }
+
     const sign = razorpay_order_id + "|" + razorpay_payment_id;
 
     const expectedSign = crypto
@@ -52,13 +60,21 @@ router.post("/verify-payment", async (req, res) => {
       ...formData,
       paymentStatus: "PAID",
       paymentId: razorpay_payment_id,
+      orderId: razorpay_order_id,
     });
 
     await registration.save();
 
-    res.status(201).json({ success: true });
+    res.status(201).json({
+      success: true,
+      message: "Payment verified & team registered",
+    });
   } catch (error) {
-    res.status(500).json({ message: "Payment verification failed" });
+    console.error("VERIFY ERROR:", error);
+    res.status(500).json({
+      message: "Payment verification failed",
+      error: error.message,
+    });
   }
 });
 
