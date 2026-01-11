@@ -1,8 +1,8 @@
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
 const sponsorTiers = [
+  // Keep empty for now or add sponsors later
 ];
 
 export const Sponsors = () => {
@@ -12,6 +12,7 @@ export const Sponsors = () => {
   return (
     <section className="py-24 relative">
       <div className="container mx-auto px-4">
+        {/* Heading */}
         <motion.div
           ref={ref}
           initial={{ opacity: 0, y: 30 }}
@@ -28,6 +29,7 @@ export const Sponsors = () => {
           </h2>
         </motion.div>
 
+        {/* Sponsors (empty for now) */}
         <div className="space-y-12">
           {sponsorTiers.map((tier, tierIndex) => (
             <motion.div
@@ -39,29 +41,31 @@ export const Sponsors = () => {
               <h3 className="text-center text-muted-foreground text-sm uppercase tracking-widest mb-6">
                 {tier.tier} Sponsors
               </h3>
+
               <div className="flex flex-wrap justify-center gap-6">
                 {tier.sponsors.map((sponsor, index) => (
                   <motion.div
                     key={sponsor.name}
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                    transition={{ duration: 0.3, delay: tierIndex * 0.15 + index * 0.05 }}
-                    className={`glass-card border border-border/50 hover:border-primary/50 transition-all duration-300 flex items-center justify-center group cursor-pointer ${
-                      tier.tier === "Diamond"
-                        ? "w-48 h-24"
-                        : tier.tier === "Gold"
+                    transition={{
+                      duration: 0.3,
+                      delay: tierIndex * 0.15 + index * 0.05,
+                    }}
+                    className={`glass-card border border-border/50 hover:border-primary/50 transition-all duration-300 flex items-center justify-center group cursor-pointer ${tier.tier === "Diamond"
+                      ? "w-48 h-24"
+                      : tier.tier === "Gold"
                         ? "w-40 h-20"
                         : "w-32 h-16"
-                    }`}
+                      }`}
                   >
                     <span
-                      className={`font-display font-bold text-muted-foreground group-hover:text-primary transition-colors ${
-                        tier.tier === "Diamond"
-                          ? "text-3xl"
-                          : tier.tier === "Gold"
+                      className={`font-display font-bold text-muted-foreground group-hover:text-primary transition-colors ${tier.tier === "Diamond"
+                        ? "text-3xl"
+                        : tier.tier === "Gold"
                           ? "text-2xl"
                           : "text-xl"
-                      }`}
+                        }`}
                     >
                       {sponsor.logo}
                     </span>
@@ -72,17 +76,40 @@ export const Sponsors = () => {
           ))}
         </div>
 
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="text-center text-muted-foreground mt-12"
+        {/* Contact / Become Sponsor Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="glass-card border border-border/50 max-w-xl mx-auto mt-20 p-8 text-center"
         >
-          Interested in sponsoring?{" "}
-          <a href="#" className="text-primary hover:underline">
-            Contact us
-          </a>
-        </motion.p>
+          <h3 className="text-2xl font-display font-bold mb-4">
+            Become a Sponsor
+          </h3>
+
+          <p className="text-muted-foreground mb-6">
+            Partner with Pandu College Hackathon and support innovation.
+          </p>
+
+          <div className="space-y-2 text-muted-foreground">
+            <p>📧 panducollegehackathon@gmail.com</p>
+            <p>📞 +91 97075 21712</p>
+          </div>
+
+          <button
+            onClick={() =>
+              window.open(
+                "https://mail.google.com/mail/?view=cm&fs=1&to=panducollegehackathon@gmail.com&su=Hackathon Sponsorship Inquiry",
+                "_blank"
+              )
+            }
+            className="mt-6 px-6 py-3 rounded-xl bg-primary text-primary-foreground hover:opacity-90 transition"
+          >
+            Contact Us
+          </button>
+
+
+        </motion.div>
       </div>
     </section>
   );

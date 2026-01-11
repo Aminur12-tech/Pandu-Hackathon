@@ -112,9 +112,9 @@ export const Hero = ({ onRegisterClick }: HeroProps) => {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-4xl md:text-6xl lg:text-7xl font-display font-bold mb-6 leading-tight"
           >
-            <span className="gradient-text">HACKATHON</span>
+            <span className="gradient-text">CODEFEST</span>
             <br />
-            <span className="text-foreground">2025</span>
+            <span className="text-foreground">2026</span>
           </motion.h1>
 
           <motion.p

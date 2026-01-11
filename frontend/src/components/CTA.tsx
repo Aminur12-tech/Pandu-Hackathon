@@ -80,9 +80,14 @@ export const CTA = ({ onRegisterClick }: CTAProps) => {
               Register Now
               <ArrowRight className="w-5 h-5" />
             </Button>
-            <Button variant="neon-purple" size="xl">
+            <Button
+              variant="neon-purple"
+              size="xl"
+              onClick={() => window.open("https://discord.gg/vNajWpjGD", "_blank")}
+            >
               Join Discord
             </Button>
+
           </motion.div>
 
           <motion.p
@@ -92,7 +97,7 @@ export const CTA = ({ onRegisterClick }: CTAProps) => {
             className="text-muted-foreground text-sm mt-8"
           >
             <div className="mt-3 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/20 border border-accent/30">
-              <span className="text-sm font-semibold text-accent">Registration closes JANURAY 25, 2026</span>
+              <span className="text-sm font-semibold text-accent">Registration closes JANURAY 26, 2026</span>
             </div>
           </motion.p>
         </motion.div>

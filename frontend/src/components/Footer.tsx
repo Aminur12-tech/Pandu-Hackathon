@@ -2,10 +2,9 @@ import { Zap, Github, Twitter, Linkedin, Instagram } from "lucide-react";
 import LogoImage from "@/assets/logo.png";
 
 const socialLinks = [
-  { icon: Twitter, href: "#", label: "Twitter" },
-  { icon: Github, href: "#", label: "GitHub" },
-  { icon: Linkedin, href: "#", label: "LinkedIn" },
-  { icon: Instagram, href: "#", label: "Instagram" },
+  { icon: Twitter, href: "https://x.com/PanduClgHack", label: "Twitter" },
+  { icon: Linkedin, href: "https://www.linkedin.com/in/panducollege-hackathon-4a4a243a4/", label: "LinkedIn" },
+  { icon: Instagram, href: "https://www.instagram.com/panducollegehackathon/", label: "Instagram" },
 ];
 
 const footerLinks = [
@@ -34,14 +33,14 @@ export const Footer = () => {
           <div className="lg:col-span-2">
             <a href="#" className="flex items-center gap-2 mb-6">
               <div className="relative">
-                <img src={LogoImage} alt="Hackathon Logo" className="w-10 h-10"/>
+                <img src={LogoImage} alt="CODEFEST Logo" className="w-10 h-10"/>
               </div>
               <span className="font-display text-xl font-bold gradient-text">
-                NEXUS HACK
+                CODEFEST
               </span>
             </a>
             <p className="text-muted-foreground mb-6 max-w-sm">
-              The ultimate hackathon experience. 48 hours of innovation, collaboration, 
+              The ultimate hackathon experience. 24 hours of innovation, collaboration, 
               and competition with the brightest minds in tech.
             </p>
             <div className="flex gap-4">
@@ -83,7 +82,7 @@ export const Footer = () => {
         {/* Bottom */}
         <div className="glow-line mb-8" />
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-          <p>© 2026 Nexus Hack. All rights reserved.</p>
+          <p>© 2026 Pandu Hackathon. All rights reserved.</p>
           <p>
             Built with{" "}
             <span className="text-accent">♥</span>{" "}

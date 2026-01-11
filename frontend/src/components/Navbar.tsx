@@ -43,7 +43,7 @@ export const Navbar = ({ onRegisterClick }: NavbarProps) => {
             <img src={logoImage} alt="Hackathon Logo" className="w-10 h-10" />
           </div>
           <span className="font-display text-xl font-bold gradient-text">
-            HACKATHON
+            CODEFEST
           </span>
         </a>
 
